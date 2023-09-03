@@ -6,7 +6,7 @@
 /*   By: groman-l <groman-l@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 22:55:49 by groman-l          #+#    #+#             */
-/*   Updated: 2023/09/02 01:39:05 by groman-l         ###   ########.fr       */
+/*   Updated: 2023/09/03 15:39:38 by groman-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@ typedef struct s_fractol
 	int		end;
 	int		m_x;
 	int		m_y;
+	int		type;
+	int		max_iter;
 }	t_fractol;
+
+void	render(t_fractol *f, int x, int y);
+void	my_mlx_pixel_put(t_fractol *f, int x, int y, int color);
 
 #endif

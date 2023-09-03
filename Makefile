@@ -6,7 +6,7 @@
 #    By: groman-l <groman-l@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/01 21:35:34 by groman-l          #+#    #+#              #
-#    Updated: 2023/09/01 22:21:51 by groman-l         ###   ########.fr        #
+#    Updated: 2023/09/03 15:38:35 by groman-l         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ MN_LIB = ./miniLibX/
 FRAME = -framework OpenGL -framework AppKit
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SORUCES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-SRC = fract_ol.c
+SRC = fract_ol.c render.c
 L_SRC = ./src
 L_ML = ./miniLibX/libmlx.a
 INC =	-I ./inc/\
@@ -38,7 +38,7 @@ all: dir $(NAME)
 
 dir:
 	@make -C $(MN_LIB) --no-print-directory &> /dev/null
-	@mkdir -p $(D_OBJ) --no-print-directory
+	@mkdir -p $(D_OBJ)
 
 $(D_OBJ)/%.o: $(L_SRC)/%.c
 	@$(CC) -MMD $(FLAGS) -c $< -o $@ $(INC)
@@ -57,3 +57,4 @@ clean:
 	@make clean -C $(MN_LIB) --no-print-directory
 
 re: fclean all
+.SILENT:
