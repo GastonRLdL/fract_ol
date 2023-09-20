@@ -6,11 +6,24 @@
 /*   By: groman-l <groman-l@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 13:02:23 by groman-l          #+#    #+#             */
-/*   Updated: 2023/09/03 15:46:22 by groman-l         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:19:38 by groman-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "../inc/fract_ol.h"
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0' && i < (n - 1))
+		i++;
+	if (n == 0)
+		return (0);
+	return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
+}
 
 static int	mandelbrot(double cr, double ci, t_fractol *f)
 {
@@ -32,15 +45,42 @@ static int	mandelbrot(double cr, double ci, t_fractol *f)
 	return (i);
 }
 
-static int	fractol(t_fractol *f, double re, double im)
+static int	julia(double zx, double zy, t_fractol *f)
+{
+	int		i;
+	double	tmp;
+
+	i = -1;
+	tmp = 0;
+	while (zx * zx + zy * zy <= 4.0 && ++i < f->max_iter)
+	{
+		tmp = 2 * zx * zy + f->m_y;
+		zx = zx * zx - zy * zy + f->m_x;
+		zy = tmp;
+	}
+	return (i);
+}
+
+int	fractol(t_fractol *f, double re, double im)
 {
 	int	i;
+	int	len;
 
 	i = 0;
-	if (f->type == 8)
+	len = 0;
+	while (f->args[len])
+		len++;
+	f->args[len] = '\0';
+	if (!ft_strncmp(f->args, "mandelbrot", -1))
 		i = mandelbrot(re, im, f);
-	else if (f->type == 0)
-		i = 0;
+	else if (!ft_strncmp(f->args, "julia", -1))
+		i = julia(re, im, f);
+	else
+	{
+		write(1, "is -mandelbrot-\n", 16);
+		write(1, "or -julia-\n", 11);
+		ft_exit(f);
+	}
 	return (i);
 }
 
@@ -48,20 +88,18 @@ void	render(t_fractol *f, int x, int y)
 {
 	double	re;
 	double	im;
-	double	max_im;
 	int		i;
 
-	f->max_iter = 100;
-	f->type = 8;
+	f->max_iter = 1;
 	mlx_clear_window(f->mlx, f->win);
-	max_im = -2.0 + (2.0 - (-2.0)) * HIGH / WIDTH;
+	f->max_im = -2.0 + (2.0 - (-2.0)) * HIGH / WIDTH;
 	while (++y < HIGH)
 	{
 		x = -1;
 		while (++x < WIDTH)
 		{
 			re = -2.0 + (double)x * (2.0 - (-2.0)) / WIDTH;
-			im = max_im + (double)y * (-2.0 - 2.0) / HIGH;
+			im = f->max_im + (double)y * (-2.0 - 2.0) / HIGH;
 			i = fractol(f, re, im);
 			if (i < f->max_iter)
 				my_mlx_pixel_put(f, x, y, (i * 0xADD8E6));
