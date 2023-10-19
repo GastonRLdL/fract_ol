@@ -6,7 +6,7 @@
 /*   By: groman-l <groman-l@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 13:02:23 by groman-l          #+#    #+#             */
-/*   Updated: 2023/09/12 17:19:38 by groman-l         ###   ########.fr       */
+/*   Updated: 2023/10/19 12:22:23 by groman-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,29 +77,28 @@ int	fractol(t_fractol *f, double re, double im)
 		i = julia(re, im, f);
 	else
 	{
-		write(1, "is -mandelbrot-\n", 16);
+		write(1, "it's -mandelbrot-\n", 17);
 		write(1, "or -julia-\n", 11);
 		ft_exit(f);
 	}
 	return (i);
 }
 
-void	render(t_fractol *f, int x, int y)
+int	render(t_fractol *f, int x, int y)
 {
 	double	re;
 	double	im;
 	int		i;
 
-	f->max_iter = 1;
+	f->max_iter = 100;
 	mlx_clear_window(f->mlx, f->win);
-	f->max_im = -2.0 + (2.0 - (-2.0)) * HIGH / WIDTH;
 	while (++y < HIGH)
 	{
 		x = -1;
 		while (++x < WIDTH)
 		{
-			re = -2.0 + (double)x * (2.0 - (-2.0)) / WIDTH;
-			im = f->max_im + (double)y * (-2.0 - 2.0) / HIGH;
+			re = f->min_re + (double)x * (f->max_re - (f->min_re)) / WIDTH;
+			im = f->max_im + (double)y * (f->min_im - f->max_im) / HIGH;
 			i = fractol(f, re, im);
 			if (i < f->max_iter)
 				my_mlx_pixel_put(f, x, y, (i * 0xADD8E6));
@@ -108,4 +107,5 @@ void	render(t_fractol *f, int x, int y)
 		}
 	}
 	mlx_put_image_to_window (f->mlx, f->win, f->img, 0, 0);
+	return (SUCCESS);
 }
